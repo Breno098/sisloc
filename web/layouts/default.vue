@@ -22,7 +22,7 @@
           @click="goToIndexPage"
           class="text-black row items-center" 
         >
-          MenuOn
+          Tools Rent
         </q-toolbar-title>
 
         {{ userName }}

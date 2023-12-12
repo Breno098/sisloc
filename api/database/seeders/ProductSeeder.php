@@ -18,12 +18,37 @@ class ProductSeeder extends Seeder
     {
         $furadeita = Product::factory()->create([
             'name' => 'Furadeira',
-            'price' => 4.99,
+            'price' => 124.99,
         ]);
 
         $furadeita->images()->create([
             'title' => 'Furadeira',
-            'path' => 'https://m.media-amazon.com/images/I/51tvhQUT10L.__AC_SX300_SY300_QL70_ML2_.jpg',
+            'path' => 'https://cdn.awsli.com.br/600x450/1683/1683736/produto/89189061/48b63903b7.jpg',
+        ]);
+
+        $martelo = Product::factory()->create([
+            'name' => 'Martelo',
+            'price' => 40.99,
+        ]);
+
+        $martelo->images()->create([
+            'title' => 'Martelo',
+            'path' => 'https://madmais.vteximg.com.br/arquivos/ids/166523-0-0/MARTELO-UNHA-CABO-MADEIRA-20MM-1.jpg?v=638240810817100000',
+        ]);
+
+        $martelo->images()->create([
+            'title' => 'Martelo',
+            'path' => 'https://madmais.vteximg.com.br/arquivos/ids/166540-0-0/MARTELO-UNHA-CABO-MADEIRA-25MM-4.jpg?v=638240836474330000',
+        ]);
+
+        $esmerilhadeira = Product::factory()->create([
+            'name' => 'Esmerilhadeira',
+            'price' => 319.98,
+        ]);
+
+        $esmerilhadeira->images()->create([
+            'title' => 'Esmerilhadeira',
+            'path' => 'https://madmais.vteximg.com.br/arquivos/ids/159949-1000-1000/ESMERILHADEIRA-ANGULAR-BLACK-DECKER-4--1-2-POL.jpg?v=637737909944970000',
         ]);
     }
 }

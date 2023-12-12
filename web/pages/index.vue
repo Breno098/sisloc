@@ -9,6 +9,8 @@
 
   const search = ref('')
 
+  const slide = ref(1);
+
   const { data, refresh } = await useApiFetch('/api/product', {
     query: { 
       name: search,
@@ -49,17 +51,40 @@
         :key="product.id"
       >
         <q-card 
+          bordered
           flat
-          @click="showProduct(product)"
         >
           <q-img 
-            :src="product.image"
+            :src="product.images[0].path"
             height="200px"
-          >
-            <div class="absolute-bottom text-center">
-              <div class="text-bold text-uppercase">{{ product.name }}</div>
+            fit="contain"
+          />
+
+          <q-separator  />
+
+          <q-card-section class="row justify-between bg-grey-2">
+            <div class="text-h6 text-center">{{ product.name }}</div>
+            <div class="text-h5 text-green text-center">R$ {{ product.price }}</div>
+          </q-card-section>
+
+          <q-separator inset />
+
+          <q-card-section>
+            <div class="text-center">
+              {{ product.description }}
             </div>
-          </q-img>
+          </q-card-section>
+
+          <q-card-actions>
+            <q-btn 
+              color="orange"
+              @click="showProduct(product)"
+              no-caps
+              class="fit"
+            > 
+              Ver detalhes 
+            </q-btn>
+          </q-card-actions>
         </q-card>
       </div>
     </div>

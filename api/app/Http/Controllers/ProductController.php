@@ -36,7 +36,6 @@ class ProductController extends Controller
                     'name' => $product->name,
                     'description' => $product->description,
                     'price' => $product->price,
-                    'image' => $product->images->first()->path,
                     'images' => $product->images->map(function(ProductImage $image) {
                         return [
                             'title' => $image->title,
