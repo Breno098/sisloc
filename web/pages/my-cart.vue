@@ -35,83 +35,6 @@
     }
   })
 
-  const CEPIsValidated = ref(false)
-  const CEPIsnotValidated = computed(() => !CEPIsValidated.value)
-  const addressIsNotCompleted = computed(() => CEPIsnotValidated.value || !address.value.number)
-  const cellphoneIsValidated = computed(() => personData.value.cellphone && personData.value.cellphone.replace(/\D/g, '').length === 11)
-  const cannotFinish = computed(() => !personData.value.name || !cellphoneIsValidated.value || !paymentMethod.value)
-
-  const textButtonAdrees = computed(() => {
-    if (CEPIsnotValidated.value) {
-      return 'Informe o CEP'
-    }
-
-    if (!address.value.number) {
-      return 'Informe o número'
-    }
-
-    return 'Confirmar endereço de entrega'
-  })
-
-  const textButtonPaymentMethodAndContact = computed(() => {
-    if (cannotFinish.value) {
-      return 'Informe os dados para contato';
-    }
-
-    if (!paymentMethod.value) {
-      return 'Adicione a forma de pagamento';
-    }
-
-    return 'Finalizar pedido'
-  })
-
-  const totalOrderPrice = computed(() => {
-    let totalResult = 0;
-
-    products.value.forEach(product => {
-      totalResult += parseFloat(product.totalPrice);
-    });
-
-    return totalResult;
-  })
-
-  function changeStatusCep(valid, data = {}) {
-    CEPIsValidated.value = valid  && !data.erro;
-
-    if (CEPIsValidated.value) {
-      address.value.street = data.logradouro;
-      address.value.district = data.bairro;
-      address.value.complement = data.complemento;
-      address.value.city = data.localidade;
-      address.value.state = data.uf;
-    } else {
-      address.value.street = null;
-      address.value.number = null;
-      address.value.district = null;
-      address.value.complement = null;
-      address.value.city = null;
-      address.value.state = null;
-    }
-  }
-
-  async function checkCEP() {
-    const cep = address.value.cep.replace(/\D/g, '');
-
-    if (cep.length < 8) {
-      return changeStatusCep(false);
-    }
-
-    const url = `https://viacep.com.br/ws/${cep}/json`;
-
-    const { data } = await useFetch(url)
-
-    if (! data.value) {
-      return changeStatusCep(false);
-    }
-
-    changeStatusCep(true, data.value);
-  }
-
   const resultData = computed(() => {
     let result = {
       items: [],
@@ -146,397 +69,185 @@
   function removeProduct(product) {
     shopingCart.removeProduct(product.id)
   }
+
+  const formatMoney = (price) => price.toLocaleString('pt-br', {
+    style: 'currency', 
+    currency: 'BRL'
+  });
+
+  const calculateTotalPriceOFProduct = (product) => {
+      let total = 0
+
+      if (product.period === 'daily') {
+          total = product.count * product.daily_price;
+      }
+
+      if (product.period === 'weekly') {
+          total = product.count * product.weekly_price;
+      }
+
+      if (product.period === 'fortnightly') {
+          total = product.count * product.fortnightly_price;
+      }
+
+      if (product.period === 'monthly') {
+          total = product.count * product.monthly_price;
+      }
+
+      return total;
+  }
+
+  const totalFormated = product => {
+    let total = calculateTotalPriceOFProduct(product);
+
+    return formatMoney(total);
+  }
+
+  const price = (product) => {
+      let price = 0
+
+      if (product.period === 'daily') {
+          price = product.daily_price;
+      }
+
+      if (product.period === 'weekly') {
+          price = product.weekly_price;
+      }
+
+      if (product.period === 'fortnightly') {
+          price = product.fortnightly_price;
+      }
+
+      if (product.period === 'monthly') {
+          price = product.monthly_price;
+      }
+
+      return formatMoney(price)
+  }
+
+  const description = (product) => {
+    if (product.period === 'daily') {
+      return 'Aluguel diário';
+    }
+
+    if (product.period === 'weekly') {
+      return 'Aluguel semanal';
+    }
+
+    if (product.period === 'fortnightly') {
+      return 'Aluguel quinzenal';
+    }
+
+    return 'Aluguel mensal';
+  }
+
+  const totalOrderPrice = computed(() => {
+      let price = products.value.reduce((carryTotal, prod) => {
+        return carryTotal + calculateTotalPriceOFProduct(prod);
+      }, 0)
+
+      return formatMoney(price)
+  })
 </script>
 
 <template>
   <div>
-    <q-stepper
-      v-model="step"
-      ref="stepper"
-      color="primary"
-      animated
-      flat
-      vertical
-      done-color="green"
-    >
-      <q-step
-        :name="1"
-        title="Pedido"
-        icon="receipt_long"
-        :done="step > 1"
+    <div class="text-left text-h4 q-my-lg">
+        Meu carrinho
+    </div>
+
+    <div class="row q-col-gutter-md">
+      <div 
+        v-for="product in products"
+        class="col-12"
       >
-        <q-card
-          v-for="product in products"
-          :key="product.id"
-          flat
-        >
-          <q-card-section>
-              <q-img 
-              :src="product.image"
-              height="200px"
-            >
-              <div class="absolute-bottom text-center">
-                <div class="text-bold text-uppercase">{{ product.name }}</div>
-              </div>
-            </q-img>
-            
-              <div class="text-h6 text-weight-bolder">
-                  {{ product.name }}
-              </div>
-
-              <div class="text-caption text-grey-9">
-                  Total: R$ {{ product.price }}
-              </div>
-
-              <q-btn
-                flat
-                color="primary"
-                @click="removeProduct(product)"
-                label="remover"
-                class="col-3"
-              />
-
-          </q-card-section>
-        </q-card>
-      </q-step>
-
-      <!-- <q-step
-        :name="2"
-        title="Entrega"
-        icon="location_on"
-        :done="step > 2"
-      >
-        <q-card flat>
-          <q-card-section>
+        <q-card flat bordered>
+          <q-card-section >
             <div class="row q-col-gutter-md">
-              <div class="col-12 text-h6 text-weight-bolder">
-                Endereço de entrega
+              <div class="col-5 col-md-2 text-center">
+                <q-img
+                  :src="product.images[0].path"
+                  height="50px"
+                  width="50px"
+                  fit="contain"
+                />
               </div>
 
-              <div class="col-12 col-md-4">
-                  <q-input
-                      outlined
-                      v-model="address.cep"
-                      label="CEP"
-                      dense
-                      mask="##.###-###"
-                      @update:model-value="checkCEP"
-                  >
-                    <template v-slot:append>
-                      <q-icon
-                        name="check"
-                        size="sm"
-                        color="green"
-                        v-if="CEPIsValidated"
-                      />
-                    </template>
-                  </q-input>
+              <div class="col-6 col-md-3">
+                {{ product.name }}
+
+                <div class="text-grey-5">
+                  {{ description(product) }}
+                </div>
               </div>
 
-              <div class="col-12 col-md-2">
-                  <q-input
-                      outlined
-                      v-model="address.number"
-                      label="Número"
-                      dense
-                      :disable="CEPIsnotValidated"
-                      mask="#####"
-                  >
-                  </q-input>
+              <div class="col-12 col-md-2 flex flex-center">
+                Valor unitário: {{ price(product) }}
               </div>
 
-              <div class="col-12 col-md-6">
-                  <q-input
-                      outlined
-                      v-model="address.street"
-                      label="Rua"
-                      dense
-                      :disable="CEPIsnotValidated"
-                  >
-                  </q-input>
+              <div class="col-12 col-md-2 flex flex-center">
+                <q-btn-group outline class="full-width">
+                  <q-btn
+                      @click="product.count--"
+                      :disabled="product.count == 1"
+                      icon="remove"
+                      outline
+                      padding="5px"
+                      class="fit"
+                      color="grey-6"
+                  />
+
+                  <q-btn :label="product.count" outline size="sm" color="grey-6"/>
+
+                  <q-btn
+                    @click="product.count++"
+                      icon="add"
+                      outline
+                      padding="5px"
+                      class="fit"
+                      color="grey-6"
+                  />
+                </q-btn-group>
               </div>
 
-              <div class="col-12 col-md-4">
-                  <q-input
-                      outlined
-                      v-model="address.district"
-                      label="Bairro"
-                      dense
-                      :disable="CEPIsnotValidated"
-                  >
-                  </q-input>
+              <div class="col-12 col-md-2 flex flex-center">
+                Total de {{ totalFormated(product) }}
               </div>
 
-              <div class="col-12 col-md-4">
-                  <q-input
-                      outlined
-                      v-model="address.city"
-                      label="Cidade"
-                      dense
-                      :disable="CEPIsnotValidated"
-                  >
-                  </q-input>
-              </div>
-
-              <div class="col-12 col-md-4">
-                  <q-input
-                      outlined
-                      v-model="address.state"
-                      label="UF"
-                      maxlength="2"
-                      dense
-                      :disable="CEPIsnotValidated"
-                  >
-                  </q-input>
-              </div>
-
-              <div class="col-12 col-md-8">
-                  <q-input
-                      outlined
-                      v-model="address.complement"
-                      label="Complemento"
-                      dense
-                      :disable="CEPIsnotValidated"
-                  >
-                  </q-input>
+              <div class="col-12 col-md-1 flex flex-center">
+                <q-btn 
+                  color="red"
+                  @click="removeProduct(product)"
+                  no-caps
+                  icon="close"
+                  size="sm"
+                  round
+                />
               </div>
             </div>
           </q-card-section>
         </q-card>
-      </q-step>
+      </div>
+    </div>
 
-      <q-step
-        :name="3"
-        title="Contato & Pagamento"
-        icon="credit_card"
-        :done="step > 3"
-      >
-        <q-card flat>
-            <q-card-section>
-              <div class="row q-col-gutter-md">
-                <div class="col-12 text-h6 text-weight-bolder">
-                  Contato
-                </div>
+    <div class="row q-col-gutter-md q-my-md">
+      <div class="col-12 text-right text-h5">
+        Total	{{ totalOrderPrice }}
+      </div>
 
-                <div class="col-12 col-md-6">
-                    <q-input
-                        outlined
-                        v-model="personData.name"
-                        label="Como podemos te chamar?"
-                        dense
-                        readonly
-                    >
-                    </q-input>
-                </div>
+      <div class="col-12">
+        <q-separator inset />
+      </div>
 
-                <div class="col-12 col-md-6">
-                    <q-input
-                        outlined
-                        v-model="personData.cellphone"
-                        label="Celular"
-                        dense
-                        mask="(##) #####-####"
-                    >
-                    </q-input>
-                </div>
-
-                <div class="col-12 text-h6 text-weight-bolder">
-                  Forma de pagamento
-                </div>
-
-                <div class="col-12 col-md-6">
-                  <q-list>
-                    <q-item tag="label" v-ripple>
-                      <q-item-section avatar>
-                        <q-radio
-                          v-model="paymentMethod"
-                          val="cash"
-                          color="green"
-                          checked-icon="task_alt"
-                        />
-                      </q-item-section>
-
-                      <q-item-section>
-                        <q-item-label>Dinheiro</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                    <q-item tag="label" v-ripple>
-                      <q-item-section avatar>
-                        <q-radio
-                          v-model="paymentMethod"
-                          val="credit_card"
-                          color="green"
-                          checked-icon="task_alt"
-                        />
-                      </q-item-section>
-
-                      <q-item-section>
-                        <q-item-label>Cartão de crédito/débito</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                  </q-list>
-                </div>
-              </div>
-            </q-card-section>
-        </q-card>
-      </q-step>
-
-      <q-step
-        :name="4"
-        title="Resumo"
-        icon="check"
-        :done="step > 4"
-      >
-        <div class="row q-col-gutter-xs">
-          
-          <div class="col-12">
-            <q-card
-              flat
-              class="bg-grey-4"
-            >
-              <q-card-section>
-                <div class="text-h6 text-weight-bolder">
-                  Entrega
-                </div>
-
-                <div class="text-caption text-grey-10">
-                  Rua {{ address.street }}, Número {{ address.number }}
-                </div>
-
-                <div class="text-caption text-grey-10">
-                  {{ address.district }}, {{ address.city }}
-                </div>
-
-                <div class="text-caption text-grey-10" v-if="address.complement">
-                  {{ address.complement }}
-                </div>
-
-                <div class="text-caption text-grey-10">
-                  CEP {{ address.cep }}
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <div class="col-6">
-            <q-card
-              flat
-              class="bg-grey-4 fit"
-            >
-              <q-card-section>
-                <div class="text-h6 text-weight-bolder">
-                  Contato
-                </div>
-
-                <div class="text-caption text-grey-10">
-                  {{ personData.name }}
-                </div>
-
-                <div class="text-caption text-grey-10">
-                  {{ personData.cellphone }}
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <div class="col-6">
-            <q-card
-              flat
-              class="bg-grey-4 fit"
-            >
-              <q-card-section>
-                <div class="text-h6 text-weight-bolder">
-                  Pagamento
-                </div>
-
-                <div class="text-caption text-grey-10">
-                  {{ paymentMethodComputed }}
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <div class="col-12">
-            <q-card
-              flat
-              class="bg-grey-4"
-            >
-              <q-card-section>
-                <div class="text-h6 text-weight-bolder">
-                  Total: R$ {{ totalOrderPrice }}
-                </div>
-              </q-card-section>
-            </q-card>
-          </div>
-        </div>
-      </q-step> -->
-    </q-stepper>
-
-    <q-footer class="transparent text-black">
-      <q-card flat>
-        <q-card-actions class="row">
-            <q-btn
-              v-if="step > 1"
-              flat
-              color="primary"
-              @click="$refs.stepper.previous()"
-              label="Voltar"
-              class="col-3"
-            />
-
-            <q-btn
-                v-if="step === 1"
-                @click="$refs.stepper.next()"
-                color="black"
-                class="col"
-                no-caps
-            >
-                <q-icon name="check" size="xs" class="q-mr-xs"/>
-
-                Ir para endereço de entrega
-            </q-btn>
-
-            <q-btn
-                v-if="step === 2"
-                @click="$refs.stepper.next()"
-                color="black"
-                class="col"
-                no-caps
-                :disable="addressIsNotCompleted"
-            >
-                <q-icon name="check" size="xs" class="q-mr-xs"/>
-
-                {{ textButtonAdrees }}
-            </q-btn>
-
-            <q-btn
-                v-if="step === 3"
-                @click="$refs.stepper.next()"
-                color="black"
-                class="col"
-                no-caps
-                :disable="cannotFinish"
-            >
-                <q-icon name="check" size="xs" class="q-mr-xs"/>
-
-                {{ textButtonPaymentMethodAndContact }}
-            </q-btn>
-
-            <q-btn
-                v-if="step === 4"
-                @click="finishOrder"
-                color="black"
-                class="col"
-                no-caps
-                :disable="cannotFinish"
-            >
-                <q-icon name="check" size="xs" class="q-mr-xs"/>
-
-                Finalizar
-            </q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-footer>
+      <div class="col-12 text-right">
+        <q-btn
+            @click="$refs.stepper.next()"
+            color="orange"
+            no-caps
+            label="Fechar pedido"
+            icon="check"
+        />
+      </div>
+    </div>
   </div>
 </template>

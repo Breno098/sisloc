@@ -95,7 +95,7 @@
                         />
                     </div>
 
-                    <div class="col-md-2 q-gutter-md text-center">
+                    <div class="col-md-2 q-gutter-md text-center q-pb-lg">
                         <q-img
                             v-for="image, index in product.images"
                             :src="image.path"
