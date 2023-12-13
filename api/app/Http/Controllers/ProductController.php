@@ -35,7 +35,10 @@ class ProductController extends Controller
                     'id' => $product->id,
                     'name' => $product->name,
                     'description' => $product->description,
-                    'price' => $product->price,
+                    'daily_price'=> $product->daily_price,
+                    'weekly_price'=> $product->weekly_price,
+                    'fortnightly_price'=> $product->fortnightly_price,
+                    'monthly_price'=> $product->monthly_price,
                     'images' => $product->images->map(function(ProductImage $image) {
                         return [
                             'title' => $image->title,
@@ -57,8 +60,10 @@ class ProductController extends Controller
             'id' => $product->id,
             'name' => $product->name,
             'description' => $product->description,
-            'price' => $product->price,
-            'image' => '',
+            'daily_price'=> $product->daily_price,
+            'weekly_price'=> $product->weekly_price,
+            'fortnightly_price'=> $product->fortnightly_price,
+            'monthly_price'=> $product->monthly_price,
             'images' => $product->images->map(function(ProductImage $image) {
                 return [
                     'title' => $image->title,

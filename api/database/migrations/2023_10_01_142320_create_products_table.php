@@ -15,7 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
-            $table->decimal('price')->default(0);
+            $table->decimal('daily_price')->default(0);
+            $table->decimal('weekly_price')->default(0);
+            $table->decimal('fortnightly_price')->default(0);
+            $table->decimal('monthly_price')->default(0);
             $table->timestamps();
         });
     }

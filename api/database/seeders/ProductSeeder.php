@@ -18,7 +18,6 @@ class ProductSeeder extends Seeder
     {
         $furadeita = Product::factory()->create([
             'name' => 'Furadeira',
-            'price' => 124.99,
         ]);
 
         $furadeita->images()->create([
@@ -28,7 +27,6 @@ class ProductSeeder extends Seeder
 
         $martelo = Product::factory()->create([
             'name' => 'Martelo',
-            'price' => 40.99,
         ]);
 
         $martelo->images()->create([
@@ -43,7 +41,6 @@ class ProductSeeder extends Seeder
 
         $esmerilhadeira = Product::factory()->create([
             'name' => 'Esmerilhadeira',
-            'price' => 319.98,
         ]);
 
         $esmerilhadeira->images()->create([

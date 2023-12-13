@@ -13,10 +13,11 @@ use Illuminate\Support\Carbon;
  * @property int|null $id
  * @property string $name
  * @property string|null $description
- * @property float $price
+ * @property float $daily_price
+ * @property float $weekly_price
+ * @property float $fortnightly_price
+ * @property float $monthly_price
  * @property HasMany|Collection<ProductImage> $images
- * @property BelongsToMany|Collection<Product> $additional
- * @property BelongsToMany|Collection<FoodSession> $sessions
  * @property Carbon $created_at
  * @property Carbon $updated_at
  */
@@ -30,14 +31,20 @@ class Product extends Model
     protected $fillable = [
         'name',
         'description',
-        'price',
+        'daily_price',
+        'weekly_price',
+        'fortnightly_price',
+        'monthly_price',
     ];
 
     /**
      * @var array<string, string>
      */
     protected $casts = [
-        'price' => 'float',
+        'daily_price' => 'float',
+        'weekly_price' => 'float',
+        'fortnightly_price' => 'float',
+        'monthly_price' => 'float',
     ];
 
     /**
@@ -50,29 +57,5 @@ class Product extends Model
     public function images(): HasMany|Collection
     {
         return $this->hasMany(ProductImage::class);
-    }
-
-    /**
-     * @return BelongsToMany|Collection<Product>
-     */
-    public function additional(): BelongsToMany|Collection
-    {
-        return $this->belongsToMany(
-            Product::class, 
-            'additional_products',
-            'product_id',
-            'additional_product_id'
-        )->withPivot([
-            'price as additional_price',
-            'maximum_quantity as additional_maximum_quantity'
-        ]);
-    }
-
-     /**
-     * @return BelongsToMany|Collection<FoodSession>
-     */
-    public function sessions(): BelongsToMany|Collection
-    {
-        return $this->belongsToMany(FoodSession::class);
     }
 }

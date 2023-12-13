@@ -20,7 +20,7 @@
       <q-toolbar>
         <q-toolbar-title 
           @click="goToIndexPage"
-          class="text-black row items-center" 
+          class="text-white row items-center" 
         >
           Tools Rent
         </q-toolbar-title>
@@ -35,9 +35,17 @@
     </q-header>
 
     <q-page-container>
-      <q-page>
+      <q-page class="layout-container ">
         <slot />
       </q-page>
     </q-page-container>
    </q-layout>
 </template>
+
+<style>
+  .layout-container {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 10px 0;
+  }
+</style>

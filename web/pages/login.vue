@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   definePageMeta({
     middleware: ['guest'],
-    layout: 'customer-guest'
+    layout: 'guest'
   })
 
   import { useAuthStore } from '~/stores/useAuthStore';
