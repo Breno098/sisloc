@@ -17,9 +17,6 @@ use App\Http\Controllers\ProductController;
 |
 */
 
-
-
-/** Customer Routes */
 Route::post('/login', [AuthenticatedSessionController::class, 'login'])
     ->middleware('guest')
     ->name('api.login');

@@ -1,69 +1,12 @@
 <script setup>
   import { useShopingCart } from '~/stores/useShopingCart';
-  import { useAuthStore } from '~/stores/useAuthStore';
 
   const shopingCart = useShopingCart();
-  const auth = useAuthStore();
-
-  const authUser = computed(() => auth.user ? auth.user : {});
 
   const products = computed(() => shopingCart.products)
 
-  const step = ref(1);
-
-  const address = ref({
-    cep: null,
-    street: null,
-    number: null,
-    district: null,
-    complement: null,
-    city: null,
-    state: null,
-  });
-
-  const personData = ref({
-    name: authUser.value.name,
-    cellphone: authUser.value.cellphone,
-  });
-
-  const paymentMethod = ref(null)
-  const paymentMethodComputed =  computed(() => {
-    switch (paymentMethod.value) {
-      case 'cash': return "Dinheiro";
-      case 'credit_card': return "Cartão de crédito/débito";
-      default: return null
-    }
-  })
-
-  const resultData = computed(() => {
-    let result = {
-      items: [],
-      address: { ...address.value },
-      paymentMethod: paymentMethod.value
-    };
-
-    products.value.forEach(prod => {
-      let newProduct = {
-        id: prod.product.id,
-        quantity: prod.count,
-        additional: prod.additional.map(add => ({
-          id: add.id,
-          quantity: add.count,
-        }))
-      };
-
-      result.items.push(newProduct);
-    });
-
-    return result;
-  });
-
-
   async function finishOrder() {
-    const { data } = await useApiCustomer('/order/store', {
-      method: "POST",
-      body: resultData.value,
-    });
+    alert('Finalizando compra')
   }
 
   function removeProduct(product) {
@@ -76,31 +19,23 @@
   });
 
   const calculateTotalPriceOFProduct = (product) => {
-      let total = 0
-
       if (product.period === 'daily') {
-          total = product.count * product.daily_price;
+          return product.count * product.daily_price;
       }
 
       if (product.period === 'weekly') {
-          total = product.count * product.weekly_price;
+          return product.count * product.weekly_price;
       }
 
       if (product.period === 'fortnightly') {
-          total = product.count * product.fortnightly_price;
+          return product.count * product.fortnightly_price;
       }
 
-      if (product.period === 'monthly') {
-          total = product.count * product.monthly_price;
-      }
-
-      return total;
+      return product.count * product.monthly_price;
   }
 
   const totalFormated = product => {
-    let total = calculateTotalPriceOFProduct(product);
-
-    return formatMoney(total);
+    return formatMoney(calculateTotalPriceOFProduct(product));
   }
 
   const price = (product) => {
@@ -148,10 +83,23 @@
 
       return formatMoney(price)
   })
+
+  function goToProductList() {
+    navigateTo(`/`)
+  }
 </script>
 
 <template>
   <div>
+    <div class="q-px-md q-py-md bg-grey-3 text-right">
+      <q-btn 
+        @click="goToProductList"
+        color="black"
+        no-caps
+        label="Ir para listagem de produtos"
+      />
+    </div>
+
     <div class="text-left text-h4 q-my-lg">
         Meu carrinho
     </div>
@@ -241,10 +189,10 @@
 
       <div class="col-12 text-right">
         <q-btn
-            @click="$refs.stepper.next()"
+            @click="finishOrder"
             color="orange"
             no-caps
-            label="Fechar pedido"
+            label="Finalizar pedido"
             icon="check"
         />
       </div>

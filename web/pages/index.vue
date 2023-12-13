@@ -9,8 +9,6 @@
 
   const search = ref('')
 
-  const slide = ref(1);
-
   const { data, refresh } = await useApiFetch('/api/product', {
     query: { 
       name: search,
@@ -44,14 +42,12 @@
           color="black"
           no-caps
           @click="showShoppingCard"
+          label="Ir para o carrinho"
+          icon="shopping_cart"
       >
         <q-badge color="orange" floating>
           {{ countProductsInCart }}
         </q-badge>
-
-          <q-icon name="shopping_cart" size="sm" class="q-mr-sm"/>
-          
-          Ir para o carrinho
       </q-btn>
     </div>
 
@@ -113,27 +109,5 @@
         </q-card>
       </div>
     </div>
-
-    <q-footer class="transparent text-black">
-      <q-card flat>
-        <q-card-actions>
-            <!-- <q-btn 
-                v-if="countProductsInCart"
-                color="black"
-                class="fit"
-                no-caps
-                @click="showShoppingCard"
-            >
-              <q-badge color="orange" floating>
-                {{ countProductsInCart }}
-              </q-badge>
-
-                <q-icon name="shopping_cart" size="sm" class="q-mr-sm"/>
-                
-                Concluir pedido
-            </q-btn> -->
-        </q-card-actions>
-      </q-card>
-    </q-footer> 
   </div>
 </template>
