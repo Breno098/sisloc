@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->text('technical_specifications')->nullable();
             $table->decimal('daily_price')->default(0);
             $table->decimal('weekly_price')->default(0);
             $table->decimal('fortnightly_price')->default(0);

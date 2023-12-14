@@ -17,6 +17,7 @@ use Illuminate\Support\Carbon;
  * @property float $weekly_price
  * @property float $fortnightly_price
  * @property float $monthly_price
+ * @property string $technical_specifications
  * @property HasMany|Collection<ProductImage> $images
  * @property Carbon $created_at
  * @property Carbon $updated_at
@@ -35,6 +36,7 @@ class Product extends Model
         'weekly_price',
         'fortnightly_price',
         'monthly_price',
+        'technical_specifications'
     ];
 
     /**

@@ -7,8 +7,8 @@
   import { useAuthStore } from '~/stores/useAuthStore';
 
   const form = ref({
-    email: 'test@example.com',
-    password: 'password'
+    email: 'fredx@sisloc.com.br',
+    password: '123Fred'
   });
 
   const auth = useAuthStore();
@@ -26,7 +26,14 @@
   <div>
     <q-card flat class="q-pa-md">
       <q-card-section class="text-center">
-        LOGIN
+        <div class="text-h4 bg-orange text-black text-weight-bolder q-pa-md rounded-borders">
+          Tool rental
+          <q-icon name="construction" color="black" size="lg"/>
+        </div>
+      </q-card-section>
+
+      <q-card-section class="text-center">
+        Entrar
       </q-card-section>
 
       <q-card-section class="row q-col-gutter-sm">
@@ -51,19 +58,11 @@
 
       <q-card-actions class="q-gutter-sm">
           <q-btn
-              color="green"
+              color="orange"
               label="Entrar"
               @click="handleLogin"
               class="full-width"
-          />
-
-          <q-btn
-              color="blue"
-              label="Registre-se"
-              @click="navigateTo('register')"
-              class="full-width"
-              no-caps
-              flat
+              icon="login"
           />
       </q-card-actions>
       

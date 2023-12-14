@@ -16,13 +16,16 @@
 
 <template>
    <q-layout view="lhh lpR lFf">
-    <q-header class="bg-green">
+    <q-header class="bg-">
       <q-toolbar>
         <q-toolbar-title 
           @click="goToIndexPage"
-          class="text-white row items-center" 
+          class="row items-center" 
         >
-          Tools Rent
+          <div class="bg-orange text-black text-weight-bolder q-px-md rounded-borders">
+            Tool rental
+            <q-icon name="construction" color="black" size="md"/>
+          </div>
         </q-toolbar-title>
 
         {{ userName }}
@@ -48,4 +51,29 @@
     margin: 0 auto;
     padding: 10px 0;
   }
+
+  .thumb-detail {
+        border: 1px solid rgb(209, 209, 209); border-radius: 10px;
+        width: 120px;
+        height: 120px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    @media only screen and (max-width: 600px) {
+        .layout-container {
+            max-width: 95%;
+        }
+
+        .thumb-detail {
+            width: 70px;
+            height: 70px;
+        }
+
+        .title {
+            font-size: 15px;
+        }
+    }
 </style>

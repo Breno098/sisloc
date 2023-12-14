@@ -1,13 +1,10 @@
 <script setup>
   import { useShopingCart } from '~/stores/useShopingCart';
+  import { useQuasar, QSpinnerGears } from 'quasar'
 
   const shopingCart = useShopingCart();
 
   const products = computed(() => shopingCart.products)
-
-  async function finishOrder() {
-    alert('Finalizando compra')
-  }
 
   function removeProduct(product) {
     shopingCart.removeProduct(product.id)
@@ -87,16 +84,40 @@
   function goToProductList() {
     navigateTo(`/`)
   }
+
+  function showProduct(product) {
+    navigateTo(`/product/${product.id}`)
+  }
+
+  const $q = useQuasar()
+
+  function finishOrder () {
+    const dialog = $q.dialog({
+      title: 'Quesa lá',
+      message: 'Estamos finalizando seu pedido',
+      progress: {
+        spinner: QSpinnerGears,
+        color: 'orange'
+      },
+      persistent: true,
+      ok: false
+    })
+
+    setTimeout(() => {
+      dialog.hide()
+    }, 2000)
+  }
+
 </script>
 
 <template>
   <div>
-    <div class="q-px-md q-py-md bg-grey-3 text-right">
+    <div class="q-px-md q-py-md text-right">
       <q-btn 
         @click="goToProductList"
         color="black"
         no-caps
-        label="Ir para listagem de produtos"
+        label="Voltar para o catálogo"
       />
     </div>
 
@@ -122,7 +143,12 @@
               </div>
 
               <div class="col-6 col-md-3">
-                {{ product.name }}
+                <div 
+                  @click="showProduct(product)"
+                  class="cursor-pointer text-blue-10"
+                >
+                  {{ product.name }}
+                </div>
 
                 <div class="text-grey-5">
                   {{ description(product) }}

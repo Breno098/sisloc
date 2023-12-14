@@ -32,11 +32,17 @@
     style: 'currency', 
     currency: 'BRL'
   });
+
+  const limitText = (text) => {
+      const maxCharacteres = 200;
+
+      return text.length > maxCharacteres ? text.slice(0, maxCharacteres) + '...' : text
+  }
 </script>
 
 <template>
   <div>
-    <div class="q-px-md q-pt-md bg-grey-3 text-right">
+    <div class="q-px-md q-py-md text-right">
       <q-btn 
           v-if="countProductsInCart"
           color="black"
@@ -74,27 +80,30 @@
         <q-card 
           bordered
           flat
+          class="fit column justify-between"
         >
-          <q-img 
-            :src="product.images[0].path"
-            height="200px"
-            fit="contain"
-          />
+          <div>
+            <q-img 
+              :src="product.images[0].path"
+              height="200px"
+              fit="contain"
+            />
 
-          <q-separator  />
+            <q-separator  />
 
-          <q-card-section class="row justify-between items-center bg-grey-2">
-            <div class="text-h6 text-center">{{ product.name }}</div>
-            <div class="text-subtitle2 text-green text-center">a partir de {{ formatMoney(product.daily_price) }}</div>
-          </q-card-section>
+            <q-card-section class="column items-center bg-grey-2">
+              <div class="text-center title">{{ product.name }}</div>
+              <div class="text-subtitle2 text-green text-center">a partir de {{ formatMoney(product.daily_price) }}</div>
+            </q-card-section>
 
-          <q-separator inset />
+            <q-separator inset />
 
-          <q-card-section>
-            <div class="text-center">
-              {{ product.description }}
-            </div>
-          </q-card-section>
+            <q-card-section>
+              <div class="text-center">
+                {{ limitText(product.description) }}
+              </div>
+            </q-card-section>
+          </div>
 
           <q-card-actions>
             <q-btn 

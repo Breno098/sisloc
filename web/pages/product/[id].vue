@@ -76,35 +76,52 @@
 
         return formatMoney(total)
     })
+
+    const chooseImage = (index) => {
+        indexImage.value = index;
+    }
+
+    function goToProductList() {
+        navigateTo(`/`)
+    }
 </script>
 
 <template>
     <div>
-        <q-card flat>
-            <q-card-section class="row justify-betwee">
-                <div class="text-h4">{{ product.name }}</div>
+        <div class="q-px-md q-py-md text-right">
+            <q-btn 
+                @click="goToProductList"
+                color="black"
+                no-caps
+                label="Voltar para o catálogo"
+            />
+        </div>
+
+        <q-card flat class="q-my-xl">
+            <q-card-section>
+                <div 
+                    class="title"
+                >
+                    {{ product.name }}
+                </div>
             </q-card-section>
 
             <q-card-section >
                 <div class="row q-col-gutter-sm">
-                    <div class="col-12 col-md-4">
+                    <div class="col-12 col-md-4 flex flex-center">
                         <q-img
                             :src="mainImage"
-                            height="500px"
                             fit="contain"
                         />
                     </div>
 
-                    <div class="col-md-2 q-gutter-md text-center q-pb-lg">
+                    <div class="col-md-2 q-gutter-sm q-pb-lg">
                         <q-img
                             v-for="image, index in product.images"
                             :src="image.path"
-                            @click="indexImage = index"
-                            height="120px"
-                            width="120px"
+                            @click="chooseImage(index)"
                             fit="contain"
-                            style="border: 1px solid rgb(209, 209, 209); border-radius: 10px;"
-                            class="cursor-pointer"
+                            class="cursor-pointer thumb-detail"
                         />
                     </div>
 
@@ -181,9 +198,17 @@
                                         @click="decrementcount"
                                         class="fit"
                                         color="grey-6"
-                                    />
+                                    >
+                                        <q-tooltip>
+                                            Remover 1 unidade
+                                        </q-tooltip>
+                                    </q-btn>
 
-                                    <q-btn :label="count" outline size="sm" color="grey-6"/>
+                                    <q-btn :label="count" outline size="sm" color="grey-6">
+                                        <q-tooltip>
+                                            Quantidade
+                                        </q-tooltip>
+                                    </q-btn>
 
                                     <q-btn
                                         icon="add"
@@ -192,7 +217,11 @@
                                         @click="incrementcount"
                                         class="fit"
                                         color="grey-6"
-                                    />
+                                    >
+                                        <q-tooltip>
+                                            Adicionar 1 unidade
+                                        </q-tooltip>
+                                    </q-btn>
                                 </q-btn-group>
                             </div>
 

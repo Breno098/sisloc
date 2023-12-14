@@ -15,7 +15,6 @@ class ProductImageFactory extends Factory
     {
         return [
             'title' => fake()->name(),
-            'path' => \App\Helpers\Seeder\Random::image(),
         ];
     }
 }
