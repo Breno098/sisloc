@@ -10,10 +10,6 @@ Para execução do projeto, é necessário que na máquina haja:
     - Node (versão minima 16.17.1) 
     - NPM (versão mínima 8.15.0)
 
-```
-Dar exemplos
-```
-
 ### 🔧 Instalação
 
 Clone o repositório
