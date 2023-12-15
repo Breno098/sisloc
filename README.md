@@ -92,7 +92,7 @@ Caso não haja alterações no projeto, será inicializado na porta 3000 (exempl
 
 ## 📌 Versão
 
-Nós usamos [GitHub](https://github.com/) para controle de versão.
+Foi utilizado [GitHub](https://github.com/) para controle de versão.
 
 ## ✒️ Autores
 
