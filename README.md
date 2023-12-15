@@ -96,7 +96,4 @@ Nós usamos [GitHub](https://github.com/) para controle de versão.
 
 ## ✒️ Autores
 
-* **Breno Souza** - *Trabalho Inicial* - [Breno](https://github.com/Breno098)
-
----
-⌨️ com ❤️ por [Breno](https://github.com/Breno098)
+* **Breno Souza** - *Desenvolvimento* - [Breno](https://github.com/Breno098)
